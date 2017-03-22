@@ -32,7 +32,7 @@ apt-get install -y jq #json query command line tool
 apt-get install -y vim
 
 # Install node
-curl --silent --location https://deb.nodesource.com/setup_4.x | bash -
+curl --silent --location https://deb.nodesource.com/setup_7.x | bash -
 apt-get install -y nodejs
 
 # Add docker
@@ -62,6 +62,31 @@ git clone https://github.com/jisaacks/GitGutter.git "$SUBLIME_PACKAGE_DIR"GitGut
 chown -R vagrant:vagrant "$SUBLIME_INSTALL_PACKAGE_DIR"
 chown -R vagrant:vagrant "$SUBLIME_PACKAGE_DIR"
 chown -R vagrant:vagrant "$SUBLIME_DIR"
+
+# Set up for SSL
+sudo mkdir /ssl
+sudo chown vagrant:vagrant /ssl
+cd /ssl
+sudo openssl genrsa -out "serever.key" 2048
+
+openssl req -newkey rsa:2048 -new -nodes -keyout key.pem -out csr.pem << EOF
+CA
+Ontario
+Toronto
+GroupBy Inc.
+.
+Michael Vinogradov
+michael.vinogradov@groupbyinc.com
+.
+.
+EOF
+
+openssl x509 -req -days 365 -in csr.pem -signkey key.pem -out server.crt
+
+# Create script for running HTTPS
+# cd ~
+# echo "cd ~/shared && http-server -p 8443 -S -C /ssl/server.crt -K /ssl/key.pem public" >> https.sh
+# chmod 744 ~/https.sh
 
 # Setup meld as the default merge and diff tool
 su - vagrant -c "git config --global merge.tool meld"
