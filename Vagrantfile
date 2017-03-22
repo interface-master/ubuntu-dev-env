@@ -5,6 +5,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.box = "box-cutter/ubuntu1604-desktop"
   config.vm.network "forwarded_port", guest: 8000, host: 8080
+  config.vm.network "forwarded_port", guest: 8443, host: 443
   config.vm.hostname = "ubuntu-dev-env"
 
   config.vm.provider "virtualbox" do |vb|
@@ -22,5 +23,8 @@ Vagrant.configure(2) do |config|
 
   # Installs all packages and tools 
   config.vm.provision :shell, path: "provision.sh"
+
+  # Shared folder
+  # config.vm.synced_folder "C:\\ubuntu-dev-env-shared", "/home/vagrant/shared"
 
 end
